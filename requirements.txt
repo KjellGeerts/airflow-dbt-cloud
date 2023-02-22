@@ -1,1 +1,2 @@
 apache-airflow-providers-dbt-cloud==2.2.0
+airflow-provider-fivetran-async==1.0.0a5
