@@ -1,5 +1,5 @@
 from airflow import DAG
-
+from airflow.operators.dummy import DummyOperator
 from fivetran_provider.operators.fivetran import FivetranOperator
 from fivetran_provider.sensors.fivetran import FivetranSensor
 
@@ -18,16 +18,20 @@ with DAG(
     catchup=False,
 ) as dag:
 
-    google_sheet_sync = FivetranOperator(
-        task_id="google_sheet-sync",
-        connector_id="{{ var.value.google_sheet_connector_id }}",
-    )
+ #   google_sheet_sync = FivetranOperator(
+ #       task_id="google_sheet-sync",
+ #       connector_id="{{ var.value.google_sheet_connector_id }}",
+ #   )
 
-    linkedin_sensor = FivetranSensor(
+    google_sheet_sensor = FivetranSensor(
         task_id="google_sheet-sensor",
         connector_id="{{ var.value.google_sheet_connector_id }}",
-        poke_interval=600,
+        poke_interval=30,
+    )
+
+    dummy = DummyOperator(
+        task_id='end'
     )
 
 
-    linkedin_sync >> linkedin_sensor
+    google_sheet_sensor >> dummy
